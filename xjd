@@ -1,0 +1,42 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation, PillowWriter
+
+# Set up the figure and axis
+fig, ax = plt.subplots(figsize=(8, 8))
+ax.set_aspect('equal', 'box')
+ax.set_xlim(-2, 2)
+ax.set_ylim(-2, 2)
+ax.axis('off')
+
+# Create the galaxy's stars
+n_stars = 1000
+theta = np.random.rand(n_stars) * 2 * np.pi
+radius = np.sqrt(np.random.rand(n_stars)) * 2  # Star distances
+
+x = radius * np.cos(theta)
+y = radius * np.sin(theta)
+
+# Colors and sizes for stars
+colors = np.random.rand(n_stars)
+sizes = np.random.rand(n_stars) * 50
+
+scat = ax.scatter(x, y, c=colors, s=sizes, cmap="plasma", alpha=0.7)
+
+# Update function for each frame
+def update(frame):
+    angle = frame * 0.02
+    x_rot = x * np.cos(angle) - y * np.sin(angle)
+    y_rot = x * np.sin(angle) + y * np.cos(angle)
+    scat.set_offsets(np.c_[x_rot, y_rot])
+
+# Create animation
+ani = FuncAnimation(fig, update, frames=200, interval=50)
+
+# Save the animation as an MP4 file
+ani.save("galaxy_animation.mp4", writer="ffmpeg", dpi=100)
+
+# Alternatively, save as a GIF
+# ani.save("galaxy_animation.gif", writer=PillowWriter(fps=20))
+
+plt.show()
